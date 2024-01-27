@@ -49,60 +49,28 @@ def main():
         .execute()
     )
     valores = result['values']
-    #print(valores)
+
 
 
     # Insere/Edita os itens da planilha no Google Sheets
-
-
-    resultadoIni = 0
-
-    valores_adicionar = []
-
     media_alunos = []
     for x, lista in enumerate(valores):
       if x > 2:
         resultadoIni = 0
         for y, lista in enumerate(lista):
-          if (y > 2 and y < 6 and valores[x][y].strip() != ''):
+          if (y > 2 and y < 5 and valores[x][y].strip() != ''):
             resultadoIni += float(valores[x][y])
-        resultadoIni = resultadoIni / 3
-        valores_adicionar.append([int(resultadoIni)])
-        media_alunos.append([float(resultadoIni)/10])
-    # Remover o zero no início de cada valor em valores_adicionar
-    valores_adicionar = [[str(valor[0]).lstrip('0')] for valor in valores_adicionar]
+        resultadoIni = resultadoIni / 2
+        media_alunos.append([float(resultadoIni)])
+    #Passando os valores de media_alunos para uma lista menos complexa
 
-    result = (
-      sheet.values()
-      .update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range='H4:H{}'.format(len(valores_adicionar) + 3),
-              valueInputOption='RAW', body={'values': valores_adicionar})
-      .execute()
-    )
+    media_alunos_final = [item[0] for item in media_alunos]
+    print("Imprimindo a média inicial dos alunos...")
+    print(media_alunos_final)
 
     valores_adicionar = [[]]
 
-    #Código que verifica a situação do aluno e dita se passou ou não (por nota)
-    for x, lista in enumerate(media_alunos):
-      for i in lista:
-        if float(i) >= 7.0:
-          valores_adicionar.append(["Aprovado"])
-        else:
-          if float(i) < 5.0:
-            valores_adicionar.append(["Reprovado por Nota"])
-          else:
-            if float(i) >= 5 and float(i) < 7:
-              valores_adicionar.append(["Exame Final"])
 
-
-    for  x in media_alunos:
-      print(x)
-
-    result = (
-      sheet.values()
-      .update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range='G3:G{}'.format(len(valores_adicionar) +3),
-              valueInputOption='RAW', body={'values': valores_adicionar})
-      .execute()
-    )
 
     #result = (
       #sheet.values()
@@ -111,8 +79,85 @@ def main():
    #)
 
 
+    #Retirando o total de aulas da planilha
+    #isso permitirá um cálculo dinâmico do percentual de faltas
+    for x, lista in enumerate(valores):
+      if x == 1:
+        for y, lista in enumerate(lista):
+          totalAulas = valores[x][y]
+
+    totalAulas = int(totalAulas.split(":")[1].strip())
 
 
+
+    #Armazenando a quantidade de faltas de cada aluno
+    quantidadeFaltas = []
+    for x, lista in enumerate(valores):
+      if x > 2:
+        quantidadeFaltas.append(valores[x][2])
+
+    #Armazenando o percentual de falta de cada aluno
+    quantidadePercentualFaltas = []
+    for x in quantidadeFaltas:
+      percentualFaltas = (float(x) / totalAulas) * 100
+      quantidadePercentualFaltas.append(int(percentualFaltas))
+    print("Imprimindo o percentual de falta de cada aluno em uma lista...")
+    print(quantidadePercentualFaltas)
+
+    #Código que verifica a situação do aluno e dita se passou ou não (por nota)
+    for x, lista in enumerate(media_alunos):
+      for i in lista:
+        if quantidadePercentualFaltas[x] > 25:
+          valores_adicionar.append(["Reprovado por falta"])
+        else:
+          nota = float(i)
+          if nota >= 70:
+            valores_adicionar.append(["Aprovado"])
+          elif nota < 50:
+            valores_adicionar.append(["Reprovado por Nota"])
+          else:
+            valores_adicionar.append(["Exame Final"])
+
+    result = (
+      sheet.values()
+      .update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range='G3:G{}'.format(len(valores_adicionar) +3),
+              valueInputOption='RAW', body={'values': valores_adicionar})
+      .execute()
+    )
+    #Pegando as notas da P3
+    notasP3 = []
+    for x, lista in enumerate(valores):
+      if x > 2:
+        notasP3.append(float(valores[x][5]))
+    print("Imprimindo as notas da P3 de cada aluno...")
+    print(notasP3)
+
+    #Código que verifica as notas dos alunos em situação de "Exame Final"
+    situacaoAlunos = []
+    resultadoFinal = []
+    for x, lista in enumerate(valores):
+      if x > 2:
+        situacaoAlunos.append(valores[x][6])
+
+    for x, i in enumerate(situacaoAlunos):
+      if i == "Exame Final":
+        resultado = (float(media_alunos_final[x]) + float(notasP3[x])) / 2
+        resultadoFinal.append(resultado)
+      else:
+        resultadoFinal.append(0)
+
+
+    #Anexando os valores de resultadoFinal na planilha
+    valores_adicionar = []
+    for x in range(len(resultadoFinal)):
+      valores_adicionar.append([int(resultadoFinal[x])])
+
+    result = (
+      sheet.values()
+      .update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range='H4:H{}'.format(len(valores_adicionar) + 3),
+              valueInputOption='RAW', body={'values': valores_adicionar})
+      .execute()
+    )
 
   except HttpError as err:
     print(err)
