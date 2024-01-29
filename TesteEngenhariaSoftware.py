@@ -97,7 +97,7 @@ def main():
     for x, lista in enumerate(media_alunos):
       for i in lista:
         if quantidadePercentualFaltas[x] > 25:
-          valores_adicionar.append(["Reprovado por falta"])
+          valores_adicionar.append(["Reprovado por Falta"])
         else:
           nota = float(i)
           if nota >= 70:
