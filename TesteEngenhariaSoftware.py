@@ -148,6 +148,8 @@ def main():
               valueInputOption='RAW', body={'values': valores_adicionar})
       .execute()
     )
+    print("Notas finais dos alunos em situação de 'Exame Final' inseridos na planilha")
+    print(resultadoFinal) ##Visualização para verificar ciclo de execução do programa (apenas)
 
   except HttpError as err:
     print(err)
