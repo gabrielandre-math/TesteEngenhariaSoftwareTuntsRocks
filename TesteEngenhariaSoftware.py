@@ -51,7 +51,6 @@ def main():
     valores = result['values']
 
 
-
     # Insere/Edita os itens da planilha no Google Sheets
     media_alunos = []
     for x, lista in enumerate(valores):
@@ -62,22 +61,13 @@ def main():
             resultadoIni += float(valores[x][y])
         resultadoIni = resultadoIni / 2
         media_alunos.append([float(resultadoIni)])
-    #Passando os valores de media_alunos para uma lista menos complexa
 
+    #Passando os valores de media_alunos para uma lista menos complexa
     media_alunos_final = [item[0] for item in media_alunos]
     print("Imprimindo a média inicial dos alunos...")
     print(media_alunos_final)
 
     valores_adicionar = [[]]
-
-
-
-    #result = (
-      #sheet.values()
-      #.update(spreadsheetId=SAMPLE_SPREADSHEET_ID, range='H4', valueInputOption='USER_ENTERED', body={'values': valores_adicionar})
-      #.execute()
-   #)
-
 
     #Retirando o total de aulas da planilha
     #isso permitirá um cálculo dinâmico do percentual de faltas
@@ -87,7 +77,6 @@ def main():
           totalAulas = valores[x][y]
 
     totalAulas = int(totalAulas.split(":")[1].strip())
-
 
 
     #Armazenando a quantidade de faltas de cada aluno
@@ -124,6 +113,7 @@ def main():
               valueInputOption='RAW', body={'values': valores_adicionar})
       .execute()
     )
+
     #Pegando as notas da P3
     notasP3 = []
     for x, lista in enumerate(valores):
