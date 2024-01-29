@@ -1,4 +1,5 @@
 # TesteEngenhariaSoftware
+![logoTuntsRocksHeader c8146752](https://github.com/gabrielandre-math/TesteEngenhariaSoftwareTuntsRocks/assets/60861872/bdd7128b-0e62-4a71-a783-13c4c8f6e11e)
 
 ## Google Sheets API Integration
 
