@@ -51,6 +51,9 @@ Este é um script Python que integra a API do Google Sheets para visualizar, ins
 ```bash
 python TesteEngenhariaSoftware.py
 ```
+## Recomendação de uso
+Para verificar se os dados estão realmente sendo populados na planilha, exclua as duas últimas colunas. Isso fará com que a planilha retorne ao seu estado inicial, conforme apresentado inicialmente.
+
 Certifique-se de ter as credenciais de API no arquivo `credentials.json` e as bibliotecas necessárias instaladas. Execute o script para interagir com a planilha.
 
 ## Link da planilha preenchida
